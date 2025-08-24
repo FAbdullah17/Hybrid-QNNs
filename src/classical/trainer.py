@@ -1,15 +1,22 @@
+
+import sys
+import os
 import torch
 import torch.nn as nn
 import torch.optim as optim
 import numpy as np
 import time
-import os
 from typing import Dict, Any, Tuple, Optional
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 
-from ..quantum.models import QuantumNeuralNetwork, QuantumConfig, BarrenPlateauAnalyzer
-from ..utils import log_metrics, save_experiment_results, plot_training_curves
+# Ensure project root is in sys.path for Colab and local runs
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
+from src.quantum.models import QuantumNeuralNetwork, QuantumConfig, BarrenPlateauAnalyzer
+from src.utils import log_metrics, save_experiment_results, plot_training_curves
 
 class QuantumTrainer:
     """Automated trainer for quantum neural networks with barren plateau analysis"""
