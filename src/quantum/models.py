@@ -73,16 +73,18 @@ class QuantumNeuralNetwork(nn.Module):
                     pass  # No entanglement
                 elif self.config.entanglement_type == "full":
                     # Full entanglement between all qubits
+                    # Use a single scalar parameter per control-target pair (reuse first rotation angle)
                     for i in range(self.config.n_qubits):
                         for j in range(i + 1, self.config.n_qubits):
                             qml.CNOT(wires=[i, j])
-                            qml.CRZ(weights[i % self.config.n_rotations], wires=[i, j])
+                            # weights has shape (n_qubits, n_rotations); select a scalar angle
+                            qml.CRZ(weights[i, 0], wires=[i, j])
                 elif self.config.entanglement_type == "varied":
-                    # Varied entanglement based on strength
+                    # Varied entanglement based on probability (entanglement_strength)
                     for i in range(self.config.n_qubits - 1):
                         if np.random.random() < self.config.entanglement_strength:
                             qml.CNOT(wires=[i, i + 1])
-                            qml.CRZ(weights[i % self.config.n_rotations], wires=[i, i + 1])
+                            qml.CRZ(weights[i, 0], wires=[i, i + 1])
                 
                 # Additional single qubit operations
                 for i in range(self.config.n_qubits):
